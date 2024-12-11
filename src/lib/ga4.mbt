@@ -78,7 +78,7 @@ pub fn GeometricAlgebra4D::to_string(a : GeometricAlgebra4D) -> String {
 }
 
 ///|
-fn GeometricAlgebra4D::new(
+pub fn GeometricAlgebra4D::new(
   s : Double,
   x : Double,
   y : Double,
@@ -100,7 +100,7 @@ fn GeometricAlgebra4D::new(
 }
 
 ///|
-fn GeometricAlgebra4D::make(
+pub fn GeometricAlgebra4D::make(
   s~ : Double = 0,
   x~ : Double = 0,
   y~ : Double = 0,
@@ -122,7 +122,7 @@ fn GeometricAlgebra4D::make(
 }
 
 ///|
-fn GeometricAlgebra4D::from_4(
+pub fn GeometricAlgebra4D::from_4(
   x : Double,
   y : Double,
   z : Double,
@@ -152,7 +152,7 @@ fn GeometricAlgebra4D::from_4(
 }
 
 ///|
-fn GeometricAlgebra4D::from_v4f(v : Array[Double]) -> GeometricAlgebra4D {
+pub fn GeometricAlgebra4D::from_v4f(v : Array[Double]) -> GeometricAlgebra4D {
   guard v.length() == 4 else {
     println("GeometricAlgebra4D::from_v4f: v.length() != 4")
     panic()
@@ -161,7 +161,7 @@ fn GeometricAlgebra4D::from_v4f(v : Array[Double]) -> GeometricAlgebra4D {
 }
 
 ///| only return the first 4 elements
-fn GeometricAlgebra4D::to_v4f(self : GeometricAlgebra4D) -> Array[Double] {
+pub fn GeometricAlgebra4D::to_v4f(self : GeometricAlgebra4D) -> Array[Double] {
   return [self.x, self.y, self.z, self.w]
 }
 
@@ -171,12 +171,12 @@ pub fn GeometricAlgebra4D::default() -> GeometricAlgebra4D {
 }
 
 ///|
-fn GeometricAlgebra4D::i() -> GeometricAlgebra4D {
+pub fn GeometricAlgebra4D::i() -> GeometricAlgebra4D {
   return GeometricAlgebra4D::make(xyzw=1.0)
 }
 
 ///|
-fn GeometricAlgebra4D::op_add(
+pub fn GeometricAlgebra4D::op_add(
   self : GeometricAlgebra4D,
   other : GeometricAlgebra4D
 ) -> GeometricAlgebra4D {
@@ -201,7 +201,9 @@ fn GeometricAlgebra4D::op_add(
 }
 
 ///|
-fn GeometricAlgebra4D::negate(self : GeometricAlgebra4D) -> GeometricAlgebra4D {
+pub fn GeometricAlgebra4D::negate(
+  self : GeometricAlgebra4D
+) -> GeometricAlgebra4D {
   return GeometricAlgebra4D::new(
     -self.s,
     -self.x,
@@ -233,7 +235,7 @@ pub fn GeometricAlgebra4D::op_sub(
 ///| this is a huge equation of Geometric Algebra 4D multiplication(aka. Clifford product)
 /// https://gist.github.com/tiye/c96ceb4345162ca5a4e3b37478e1e0bd#file-result-txt-L1
 /// this polynomial contains 256 terms, hard to garantee correctness, will check again and again in future
-fn GeometricAlgebra4D::op_mul(
+pub fn GeometricAlgebra4D::op_mul(
   self : GeometricAlgebra4D,
   other : GeometricAlgebra4D
 ) -> GeometricAlgebra4D {
@@ -315,7 +317,7 @@ fn GeometricAlgebra4D::op_mul(
     self.y * other.wy -
     self.yz * other.yzw -
     self.yzw * other.yz -
-    self.zw * other.z -
+    self.zw * other.z +
     self.zx * other.zwx
   let e12 = self.s * other.xy +
     self.w * other.wxy +
@@ -331,7 +333,7 @@ fn GeometricAlgebra4D::op_mul(
     self.y * other.x -
     self.yz * other.zx -
     self.zw * other.xyzw -
-    self.zwx * other.yzw -
+    self.zwx * other.yzw +
     self.zx * other.yz
   let e23 = self.s * other.yz +
     self.w * other.yzw +
@@ -358,7 +360,7 @@ fn GeometricAlgebra4D::op_mul(
     self.z * other.w +
     self.zw * other.s +
     self.zwx * other.x -
-    self.w * other.z -
+    self.w * other.z +
     self.wx * other.zx -
     self.wy * other.yz -
     self.xy * other.xyzw -
@@ -379,7 +381,7 @@ fn GeometricAlgebra4D::op_mul(
     self.wy * other.xy -
     self.x * other.w -
     self.yzw * other.xyz -
-    self.zw * other.zx -
+    self.zw * other.zx +
     self.zx * other.zw
   let e31 = self.s * other.zx +
     self.wy * other.xyzw +
@@ -499,7 +501,7 @@ fn GeometricAlgebra4D::op_mul(
 }
 
 ///| inner product
-fn ga4_inner(a : GeometricAlgebra4D, b : GeometricAlgebra4D) -> Double {
+pub fn ga4_inner(a : GeometricAlgebra4D, b : GeometricAlgebra4D) -> Double {
   let s = a.s * b.s +
     a.w * b.w +
     a.x * b.x +
@@ -574,7 +576,7 @@ pub fn GeometricAlgebra4D::length2(self : GeometricAlgebra4D) -> Double {
 }
 
 ///|
-fn GeometricAlgebra4D::length(self : GeometricAlgebra4D) -> Double {
+pub fn GeometricAlgebra4D::length(self : GeometricAlgebra4D) -> Double {
   let length = self.length2()
   if length == 0.0 {
     return 0.0
