@@ -1,3 +1,6 @@
+///|
+type! GaErr String
+
 ///| struct holding 4D geometric algebra
 pub(all) struct GeometricAlgebra4D {
   s : Double
@@ -16,7 +19,7 @@ pub(all) struct GeometricAlgebra4D {
   zwx : Double
   wxy : Double
   xyzw : Double
-}
+} derive(Eq)
 
 ///|
 pub fn GeometricAlgebra4D::to_string(a : GeometricAlgebra4D) -> String {
@@ -122,42 +125,12 @@ pub fn GeometricAlgebra4D::make(
 }
 
 ///|
-pub fn GeometricAlgebra4D::from_4(
-  x : Double,
-  y : Double,
-  z : Double,
-  w : Double
-) -> GeometricAlgebra4D {
-  return {
-    s: 0.0,
-    //
-    x,
-    y,
-    z,
-    w,
-    //
-    xy: 0.0,
-    yz: 0.0,
-    zw: 0.0,
-    wx: 0.0,
-    zx: 0.0,
-    wy: 0.0,
-    //
-    xyz: 0.0,
-    yzw: 0.0,
-    zwx: 0.0,
-    wxy: 0.0,
-    xyzw: 0.0,
-  }
-}
-
-///|
 pub fn GeometricAlgebra4D::from_v4f(v : Array[Double]) -> GeometricAlgebra4D {
   guard v.length() == 4 else {
     println("GeometricAlgebra4D::from_v4f: v.length() != 4")
     panic()
   }
-  return GeometricAlgebra4D::from_4(v[0], v[1], v[2], v[3])
+  return GeometricAlgebra4D::make(x=v[0], y=v[1], z=v[2], w=v[3])
 }
 
 ///| only return the first 4 elements
@@ -167,7 +140,7 @@ pub fn GeometricAlgebra4D::to_v4f(self : GeometricAlgebra4D) -> Array[Double] {
 
 ///|
 pub fn GeometricAlgebra4D::default() -> GeometricAlgebra4D {
-  return GeometricAlgebra4D::from_4(0.0, 0.0, 0.0, 0.0)
+  return GeometricAlgebra4D::make()
 }
 
 ///|
@@ -201,7 +174,7 @@ pub fn GeometricAlgebra4D::op_add(
 }
 
 ///|
-pub fn GeometricAlgebra4D::negate(
+pub fn GeometricAlgebra4D::op_neg(
   self : GeometricAlgebra4D
 ) -> GeometricAlgebra4D {
   return GeometricAlgebra4D::new(
@@ -229,7 +202,7 @@ pub fn GeometricAlgebra4D::op_sub(
   self : GeometricAlgebra4D,
   other : GeometricAlgebra4D
 ) -> GeometricAlgebra4D {
-  return self + other.negate()
+  return self + other.op_neg()
 }
 
 ///| this is a huge equation of Geometric Algebra 4D multiplication(aka. Clifford product)
@@ -501,34 +474,27 @@ pub fn GeometricAlgebra4D::op_mul(
 }
 
 ///| inner product
-pub fn ga4_inner(a : GeometricAlgebra4D, b : GeometricAlgebra4D) -> Double {
-  let s = a.s * b.s +
-    a.w * b.w +
-    a.x * b.x +
-    a.xyzw * b.xyzw +
-    a.y * b.y +
-    a.z * b.z -
-    a.wx * b.wx -
-    a.wxy * b.wxy -
-    a.wy * b.wy -
-    a.xy * b.xy -
-    a.xyz * b.xyz -
-    a.yz * b.yz -
-    a.yzw * b.yzw -
-    a.zw * b.zw -
-    a.zwx * b.zwx -
-    a.zx * b.zx
-  return s
-}
-
-///|
 pub fn GeometricAlgebra4D::inner_product(
-  self : Array[Double],
-  other : Array[Double]
+  self : GeometricAlgebra4D,
+  other : GeometricAlgebra4D
 ) -> Double {
-  let a_v = GeometricAlgebra4D::from_v4f(self)
-  let b_v = GeometricAlgebra4D::from_v4f(other)
-  return ga4_inner(a_v, b_v)
+  let s = self.s * other.s +
+    self.w * other.w +
+    self.x * other.x +
+    self.y * other.y +
+    self.z * other.z -
+    self.wx * other.wx -
+    self.zx * other.zx -
+    self.wy * other.wy -
+    self.xy * other.xy -
+    self.zw * other.zw -
+    self.yz * other.yz -
+    self.wxy * other.wxy -
+    self.xyz * other.xyz -
+    self.yzw * other.yzw -
+    self.zwx * other.zwx +
+    self.xyzw * other.xyzw
+  return s
 }
 
 ///|
@@ -547,42 +513,39 @@ pub fn GeometricAlgebra4D::conjugate(
     -self.wx,
     -self.zx,
     -self.wy,
-    self.xyz,
-    self.yzw,
-    self.zwx,
-    self.wxy,
-    -self.xyzw,
+    -self.xyz,
+    -self.yzw,
+    -self.zwx,
+    -self.wxy,
+    self.xyzw,
   )
 }
 
 ///|
-pub fn GeometricAlgebra4D::length2(self : GeometricAlgebra4D) -> Double {
+pub fn GeometricAlgebra4D::self_inner_product(
+  self : GeometricAlgebra4D
+) -> Double {
   return self.s * self.s +
     self.x * self.x +
     self.y * self.y +
     self.z * self.z +
-    self.w * self.w +
-    self.xy * self.xy +
-    self.yz * self.yz +
-    self.zw * self.zw +
-    self.wx * self.wx +
-    self.zx * self.zx +
-    self.wy * self.wy +
-    self.xyz * self.xyz +
-    self.yzw * self.yzw +
-    self.zwx * self.zwx +
+    self.w * self.w -
+    self.xy * self.xy -
+    self.yz * self.yz -
+    self.zw * self.zw -
+    self.wx * self.wx -
+    self.zx * self.zx -
+    self.wy * self.wy -
+    self.xyz * self.xyz -
+    self.yzw * self.yzw -
+    self.zwx * self.zwx -
     self.wxy * self.wxy +
     self.xyzw * self.xyzw
 }
 
 ///|
-pub fn GeometricAlgebra4D::length(self : GeometricAlgebra4D) -> Double {
-  let length = self.length2()
-  if length == 0.0 {
-    return 0.0
-  } else {
-    return length.sqrt()
-  }
+pub fn GeometricAlgebra4D::vector_length(self : GeometricAlgebra4D) -> Double {
+  return (self.x * self.x + self.y * self.y + self.z * self.z + self.w * self.w).sqrt()
 }
 
 ///|
@@ -610,11 +573,14 @@ fn GeometricAlgebra4D::scale(
   )
 }
 
-///|
-fn GeometricAlgebra4D::normalize(
+///| only works for 1-vector
+pub fn GeometricAlgebra4D::normalize(
   self : GeometricAlgebra4D
-) -> GeometricAlgebra4D {
-  let length = self.length()
+) -> GeometricAlgebra4D!GaErr {
+  if not(self.is_vector()) {
+    raise GaErr("self is not a vector")
+  }
+  let length = self.vector_length()
   if length == 0.0 {
     return GeometricAlgebra4D::make(s=1.0)
   } else {
@@ -623,22 +589,35 @@ fn GeometricAlgebra4D::normalize(
 }
 
 ///|
-fn GeometricAlgebra4D::reflect(
+pub fn GeometricAlgebra4D::reflect(
   self : GeometricAlgebra4D,
   b : GeometricAlgebra4D
-) -> GeometricAlgebra4D {
-  let r0 = b.normalize()
+) -> GeometricAlgebra4D!GaErr {
+  if not(b.is_vector()) {
+    raise GaErr("b is not a vector")
+  }
+  if not(self.is_vector()) {
+    raise GaErr("a is not a zero vector")
+  }
+  let r0 = b.normalize!()
   return (r0.conjugate() * self * r0).scale(-1.0)
 }
 
 ///|
-fn GeometricAlgebra4D::is_scalar_zero(self : GeometricAlgebra4D) -> Bool {
+pub fn GeometricAlgebra4D::is_scalar_zero(self : GeometricAlgebra4D) -> Bool {
   return self.s == 0.0
 }
 
 ///|
-fn GeometricAlgebra4D::is_vector_zero(self : GeometricAlgebra4D) -> Bool {
+pub fn GeometricAlgebra4D::is_vector_zero(self : GeometricAlgebra4D) -> Bool {
   return self.x == 0.0 && self.y == 0.0 && self.z == 0.0 && self.w == 0.0
+}
+
+///| only 1-vector
+pub fn GeometricAlgebra4D::is_vector(self : GeometricAlgebra4D) -> Bool {
+  return self.is_trivector_zero() &&
+    self.is_bivector_zero() &&
+    self.is_pseudoscalar_zero()
 }
 
 ///|
@@ -671,4 +650,24 @@ fn GeometricAlgebra4D::is_empty(self : GeometricAlgebra4D) -> Bool {
     self.is_bivector_zero() &&
     self.is_trivector_zero() &&
     self.is_pseudoscalar_zero()
+}
+
+///|
+pub fn GeometricAlgebra4D::inverse(
+  self : GeometricAlgebra4D
+) -> GeometricAlgebra4D!GaErr {
+  let value = self.self_inner_product()
+  if value == 0.0 {
+    raise GaErr("Cannot invert a zero multivector")
+  } else {
+    return self.scale(1.0 / value)
+  }
+}
+
+///|
+pub fn GeometricAlgebra4D::rotor_apply(
+  self : GeometricAlgebra4D,
+  rotor : GeometricAlgebra4D
+) -> GeometricAlgebra4D!GaErr {
+  return rotor * self * rotor.inverse!()
 }
