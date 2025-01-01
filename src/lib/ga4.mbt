@@ -12,8 +12,8 @@ pub(all) struct GeometricAlgebra4D {
   e23 : Double
   e34 : Double
   e41 : Double
-  e31 : Double
-  e42 : Double
+  e13 : Double
+  e24 : Double
   e123 : Double
   e234 : Double
   e341 : Double
@@ -58,11 +58,11 @@ pub fn GeometricAlgebra4D::to_string(a : GeometricAlgebra4D) -> String {
   if a.e41 != 0.0 {
     ret += " e41: " + a.e41.to_string() + ","
   }
-  if a.e31 != 0.0 {
-    ret += " e31: " + a.e31.to_string() + ","
+  if a.e13 != 0.0 {
+    ret += " e13: " + a.e13.to_string() + ","
   }
-  if a.e42 != 0.0 {
-    ret += " e42: " + a.e42.to_string() + ","
+  if a.e24 != 0.0 {
+    ret += " e24: " + a.e24.to_string() + ","
   }
   if a.e123 != 0.0 {
     ret += " e123: " + a.e123.to_string() + ","
@@ -97,8 +97,8 @@ pub fn GeometricAlgebra4D::new(
   e23 : Double,
   e34 : Double,
   e41 : Double,
-  e31 : Double,
-  e42 : Double,
+  e13 : Double,
+  e24 : Double,
   e123 : Double,
   e234 : Double,
   e341 : Double,
@@ -115,8 +115,8 @@ pub fn GeometricAlgebra4D::new(
     e23,
     e34,
     e41,
-    e31,
-    e42,
+    e13,
+    e24,
     e123,
     e234,
     e341,
@@ -136,8 +136,8 @@ pub fn GeometricAlgebra4D::make(
   e23~ : Double = 0,
   e34~ : Double = 0,
   e41~ : Double = 0,
-  e31~ : Double = 0,
-  e42~ : Double = 0,
+  e13~ : Double = 0,
+  e24~ : Double = 0,
   e123~ : Double = 0,
   e234~ : Double = 0,
   e341~ : Double = 0,
@@ -154,8 +154,8 @@ pub fn GeometricAlgebra4D::make(
     e23,
     e34,
     e41,
-    e31,
-    e42,
+    e13,
+    e24,
     e123,
     e234,
     e341,
@@ -203,8 +203,8 @@ pub fn GeometricAlgebra4D::op_add(
     self.e23 + other.e23,
     self.e34 + other.e34,
     self.e41 + other.e41,
-    self.e31 + other.e31,
-    self.e42 + other.e42,
+    self.e13 + other.e13,
+    self.e24 + other.e24,
     self.e123 + other.e123,
     self.e234 + other.e234,
     self.e341 + other.e341,
@@ -227,8 +227,8 @@ pub fn GeometricAlgebra4D::op_neg(
     -self.e23,
     -self.e34,
     -self.e41,
-    -self.e31,
-    -self.e42,
+    -self.e13,
+    -self.e24,
     -self.e123,
     -self.e234,
     -self.e341,
@@ -260,100 +260,100 @@ pub fn GeometricAlgebra4D::op_mul(
     self.e3 * other.e3 -
     self.e41 * other.e41 -
     self.e412 * other.e412 -
-    self.e42 * other.e42 -
+    self.e24 * other.e24 -
     self.e12 * other.e12 -
     self.e123 * other.e123 -
     self.e23 * other.e23 -
     self.e234 * other.e234 -
     self.e34 * other.e34 -
     self.e341 * other.e341 -
-    self.e31 * other.e31
+    self.e13 * other.e13
   let e1 = self.scalar * other.e1 +
-    self.e4 * other.e41 +
-    self.e412 * other.e42 +
-    self.e42 * other.e412 +
+    self.e4 * other.e41 -
+    self.e412 * other.e24 -
+    self.e24 * other.e412 +
     self.e1 * other.scalar +
     self.e12 * other.e2 +
-    self.e234 * other.e1234 +
-    self.e3 * other.e31 -
+    self.e234 * other.e1234 -
+    self.e3 * other.e13 -
     self.e41 * other.e4 -
     self.e123 * other.e23 -
     self.e1234 * other.e234 -
     self.e2 * other.e12 -
     self.e23 * other.e123 -
     self.e34 * other.e341 -
-    self.e341 * other.e34 -
-    self.e31 * other.e3
-  let e2 = self.scalar * other.e2 +
-    self.e4 * other.e42 +
+    self.e341 * other.e34 +
+    self.e13 * other.e3
+  let e2 = self.scalar * other.e2 -
+    self.e4 * other.e24 +
     self.e1 * other.e12 +
     self.e1234 * other.e341 +
     self.e2 * other.scalar +
     self.e23 * other.e3 -
     self.e41 * other.e412 -
-    self.e412 * other.e41 -
-    self.e42 * other.e4 -
-    self.e12 * other.e1 -
-    self.e123 * other.e31 -
+    self.e412 * other.e41 +
+    self.e24 * other.e4 -
+    self.e12 * other.e1 +
+    self.e123 * other.e13 -
     self.e234 * other.e34 -
     self.e3 * other.e23 -
     self.e34 * other.e234 -
-    self.e341 * other.e1234 -
-    self.e31 * other.e123
+    self.e341 * other.e1234 +
+    self.e13 * other.e123
   let e3 = self.scalar * other.e3 +
     self.e412 * other.e1234 +
     self.e2 * other.e23 +
     self.e3 * other.scalar +
-    self.e34 * other.e4 +
-    self.e31 * other.e1 -
+    self.e34 * other.e4 -
+    self.e13 * other.e1 -
     self.e4 * other.e34 -
-    self.e41 * other.e341 -
-    self.e42 * other.e234 -
-    self.e1 * other.e31 -
+    self.e41 * other.e341 +
+    self.e24 * other.e234 +
+    self.e1 * other.e13 -
     self.e12 * other.e123 -
     self.e123 * other.e12 -
     self.e1234 * other.e412 -
-    self.e23 * other.e2 -
-    self.e234 * other.e42 -
+    self.e23 * other.e2 +
+    self.e234 * other.e24 -
     self.e341 * other.e41
   let e4 = self.scalar * other.e4 +
     self.e4 * other.scalar +
-    self.e41 * other.e1 +
-    self.e42 * other.e2 +
+    self.e41 * other.e1 -
+    self.e24 * other.e2 +
     self.e1234 * other.e123 +
-    self.e3 * other.e34 +
-    self.e341 * other.e31 -
+    self.e3 * other.e34 -
+    self.e341 * other.e13 -
     self.e412 * other.e12 -
     self.e1 * other.e41 -
     self.e12 * other.e412 -
-    self.e123 * other.e1234 -
-    self.e2 * other.e42 -
+    self.e123 * other.e1234 +
+    self.e2 * other.e24 -
     self.e23 * other.e234 -
     self.e234 * other.e23 -
-    self.e34 * other.e3 +
-    self.e31 * other.e341
+    self.e34 * other.e3 -
+    self.e13 * other.e341
   let e12 = self.scalar * other.e12 +
     self.e4 * other.e412 +
-    self.e412 * other.e4 +
-    self.e42 * other.e41 +
+    self.e412 * other.e4 -
+    self.e24 * other.e41 +
     self.e1 * other.e2 +
     self.e12 * other.scalar +
     self.e123 * other.e3 +
     self.e234 * other.e341 +
-    self.e3 * other.e123 -
-    self.e41 * other.e42 -
+    self.e3 * other.e123 +
+    self.e41 * other.e24 -
     self.e1234 * other.e34 -
-    self.e2 * other.e1 -
-    self.e23 * other.e31 -
+    self.e2 * other.e1 +
+    self.e23 * other.e13 -
     self.e34 * other.e1234 -
-    self.e341 * other.e234 +
-    self.e31 * other.e23
+    self.e341 * other.e234 -
+    self.e13 * other.e23
   let e23 = self.scalar * other.e23 +
     self.e4 * other.e234 +
-    self.e41 * other.e1234 +
-    self.e42 * other.e34 +
-    self.e1 * other.e123 +
-    self.e12 * other.e31 +
+    self.e41 * other.e1234 -
+    self.e24 * other.e34 +
+    self.e1 * other.e123 -
+    self.e12 * other.e13 +
     self.e123 * other.e1 +
     self.e1234 * other.e41 +
     self.e2 * other.e3 +
@@ -361,121 +361,121 @@ pub fn GeometricAlgebra4D::op_mul(
     self.e234 * other.e4 +
     self.e341 * other.e412 -
     self.e412 * other.e341 -
-    self.e3 * other.e2 -
-    self.e34 * other.e42 -
-    self.e31 * other.e12
+    self.e3 * other.e2 +
+    self.e34 * other.e24 +
+    self.e13 * other.e12
   let e34 = self.scalar * other.e34 +
     self.e412 * other.e123 +
     self.e1 * other.e341 +
-    self.e2 * other.e234 +
-    self.e23 * other.e42 +
+    self.e2 * other.e234 -
+    self.e23 * other.e24 +
     self.e234 * other.e2 +
     self.e3 * other.e4 +
     self.e34 * other.scalar +
     self.e341 * other.e1 -
-    self.e4 * other.e3 +
-    self.e41 * other.e31 -
-    self.e42 * other.e23 -
+    self.e4 * other.e3 -
+    self.e41 * other.e13 +
+    self.e24 * other.e23 -
     self.e12 * other.e1234 -
     self.e123 * other.e412 -
-    self.e1234 * other.e12 -
-    self.e31 * other.e41
+    self.e1234 * other.e12 +
+    self.e13 * other.e41
   let e41 = self.scalar * other.e41 +
     self.e4 * other.e1 +
     self.e41 * other.scalar +
-    self.e412 * other.e2 +
-    self.e12 * other.e42 +
+    self.e412 * other.e2 -
+    self.e12 * other.e24 +
     self.e123 * other.e234 +
     self.e1234 * other.e23 +
     self.e2 * other.e412 +
     self.e23 * other.e1234 +
     self.e3 * other.e341 +
-    self.e341 * other.e3 -
-    self.e42 * other.e12 -
+    self.e341 * other.e3 +
+    self.e24 * other.e12 -
     self.e1 * other.e4 -
-    self.e234 * other.e123 -
-    self.e34 * other.e31 +
-    self.e31 * other.e34
-  let e31 = self.scalar * other.e31 +
-    self.e42 * other.e1234 +
+    self.e234 * other.e123 +
+    self.e34 * other.e13 -
+    self.e13 * other.e34
+  let e13 = self.scalar * other.e13 +
+    self.e24 * other.e1234 -
     self.e123 * other.e2 +
-    self.e1234 * other.e42 +
-    self.e2 * other.e123 +
-    self.e23 * other.e12 +
-    self.e234 * other.e412 +
-    self.e3 * other.e1 +
+    self.e1234 * other.e24 -
+    self.e2 * other.e123 -
+    self.e23 * other.e12 -
+    self.e234 * other.e412 -
+    self.e3 * other.e1 -
     self.e34 * other.e41 +
-    self.e31 * other.scalar -
-    self.e4 * other.e341 -
-    self.e41 * other.e34 -
-    self.e412 * other.e234 -
-    self.e1 * other.e3 -
-    self.e12 * other.e23 -
+    self.e13 * other.scalar +
+    self.e4 * other.e341 +
+    self.e41 * other.e34 +
+    self.e412 * other.e234 +
+    self.e1 * other.e3 +
+    self.e12 * other.e23 +
     self.e341 * other.e4
-  let e42 = self.scalar * other.e42 +
-    self.e4 * other.e2 +
+  let e24 = self.scalar * other.e24 -
+    self.e4 * other.e2 -
     self.e41 * other.e12 +
-    self.e42 * other.scalar +
-    self.e1234 * other.e31 +
-    self.e234 * other.e3 +
-    self.e3 * other.e234 +
-    self.e34 * other.e23 +
+    self.e24 * other.scalar +
+    self.e1234 * other.e13 -
+    self.e234 * other.e3 -
+    self.e3 * other.e234 -
+    self.e34 * other.e23 -
     self.e341 * other.e123 +
-    self.e31 * other.e1234 -
-    self.e412 * other.e1 -
-    self.e1 * other.e412 -
-    self.e12 * other.e41 -
-    self.e123 * other.e341 -
-    self.e2 * other.e4 -
+    self.e13 * other.e1234 +
+    self.e412 * other.e1 +
+    self.e1 * other.e412 +
+    self.e12 * other.e41 +
+    self.e123 * other.e341 +
+    self.e2 * other.e4 +
     self.e23 * other.e34
-  let e123 = self.scalar * other.e123 +
-    self.e42 * other.e341 +
+  let e123 = self.scalar * other.e123 -
+    self.e24 * other.e341 +
     self.e1 * other.e23 +
     self.e12 * other.e3 +
     self.e123 * other.scalar +
-    self.e1234 * other.e4 +
-    self.e2 * other.e31 +
+    self.e1234 * other.e4 -
+    self.e2 * other.e13 +
     self.e23 * other.e1 +
     self.e234 * other.e41 +
     self.e3 * other.e12 +
-    self.e34 * other.e412 +
-    self.e31 * other.e2 -
+    self.e34 * other.e412 -
+    self.e13 * other.e2 -
     self.e4 * other.e1234 -
     self.e41 * other.e234 -
-    self.e412 * other.e34 -
-    self.e341 * other.e42
+    self.e412 * other.e34 +
+    self.e341 * other.e24
   let e234 = self.scalar * other.e234 +
     self.e4 * other.e23 +
-    self.e41 * other.e123 +
-    self.e412 * other.e31 +
-    self.e42 * other.e3 +
+    self.e41 * other.e123 -
+    self.e412 * other.e13 -
+    self.e24 * other.e3 +
     self.e1 * other.e1234 +
     self.e2 * other.e34 +
     self.e23 * other.e4 +
-    self.e234 * other.scalar +
-    self.e3 * other.e42 +
+    self.e234 * other.scalar -
+    self.e3 * other.e24 +
     self.e34 * other.e2 +
     self.e341 * other.e12 -
     self.e12 * other.e341 -
     self.e123 * other.e41 -
-    self.e1234 * other.e1 -
-    self.e31 * other.e412
+    self.e1234 * other.e1 +
+    self.e13 * other.e412
   let e341 = self.scalar * other.e341 +
     self.e41 * other.e3 +
     self.e412 * other.e23 +
     self.e1 * other.e34 +
-    self.e12 * other.e234 +
-    self.e123 * other.e42 +
+    self.e12 * other.e234 -
+    self.e123 * other.e24 +
     self.e1234 * other.e2 +
     self.e3 * other.e41 +
     self.e34 * other.e1 +
-    self.e341 * other.scalar -
-    self.e4 * other.e31 -
-    self.e42 * other.e123 -
+    self.e341 * other.scalar +
+    self.e4 * other.e13 +
+    self.e24 * other.e123 -
     self.e2 * other.e1234 -
     self.e23 * other.e412 -
-    self.e234 * other.e12 -
-    self.e31 * other.e4
+    self.e234 * other.e12 +
+    self.e13 * other.e4
   let e412 = self.scalar * other.e412 +
     self.e4 * other.e12 +
     self.e41 * other.e2 +
@@ -484,12 +484,12 @@ pub fn GeometricAlgebra4D::op_mul(
     self.e123 * other.e34 +
     self.e2 * other.e41 +
     self.e23 * other.e341 +
-    self.e3 * other.e1234 +
-    self.e31 * other.e234 -
-    self.e42 * other.e1 -
-    self.e1 * other.e42 -
-    self.e1234 * other.e3 -
-    self.e234 * other.e31 -
+    self.e3 * other.e1234 -
+    self.e13 * other.e234 +
+    self.e24 * other.e1 +
+    self.e1 * other.e24 -
+    self.e1234 * other.e3 +
+    self.e234 * other.e13 -
     self.e34 * other.e123 -
     self.e341 * other.e23
   let e1234 = self.scalar * other.e1234 +
@@ -503,13 +503,13 @@ pub fn GeometricAlgebra4D::op_mul(
     self.e4 * other.e123 -
     self.e41 * other.e23 -
     self.e412 * other.e3 -
-    self.e42 * other.e31 -
+    self.e24 * other.e13 -
     self.e2 * other.e341 -
     self.e23 * other.e41 -
     self.e234 * other.e1 -
-    self.e31 * other.e42
+    self.e13 * other.e24
   return GeometricAlgebra4D::new(
-    s, e1, e2, e3, e4, e12, e23, e34, e41, e31, e42, e123, e234, e341, e412, e1234,
+    s, e1, e2, e3, e4, e12, e23, e34, e41, e13, e24, e123, e234, e341, e412, e1234,
   )
 }
 
@@ -524,8 +524,8 @@ pub fn GeometricAlgebra4D::inner_product(
     self.e2 * other.e2 +
     self.e3 * other.e3 +
     self.e41 * other.e41 +
-    self.e31 * other.e31 +
-    self.e42 * other.e42 +
+    self.e13 * other.e13 +
+    self.e24 * other.e24 +
     self.e12 * other.e12 +
     self.e34 * other.e34 +
     self.e23 * other.e23 +
@@ -548,8 +548,8 @@ pub fn GeometricAlgebra4D::magnitude2(self : GeometricAlgebra4D) -> Double {
     self.e23 * self.e23 +
     self.e34 * self.e34 +
     self.e41 * self.e41 +
-    self.e31 * self.e31 +
-    self.e42 * self.e42 +
+    self.e13 * self.e13 +
+    self.e24 * self.e24 +
     self.e123 * self.e123 +
     self.e234 * self.e234 +
     self.e341 * self.e341 +
@@ -576,8 +576,8 @@ pub fn GeometricAlgebra4D::conjugate(
     -self.e23,
     -self.e34,
     -self.e41,
-    -self.e31,
-    -self.e42,
+    -self.e13,
+    -self.e24,
     -self.e123,
     -self.e234,
     -self.e341,
@@ -599,8 +599,8 @@ pub fn GeometricAlgebra4D::self_inner_product(
     self.e23 * self.e23 +
     self.e34 * self.e34 +
     self.e41 * self.e41 +
-    self.e31 * self.e31 +
-    self.e42 * self.e42 +
+    self.e13 * self.e13 +
+    self.e24 * self.e24 +
     self.e123 * self.e123 +
     self.e234 * self.e234 +
     self.e341 * self.e341 +
@@ -631,8 +631,8 @@ fn GeometricAlgebra4D::scale(
     self.e23 * f,
     self.e34 * f,
     self.e41 * f,
-    self.e31 * f,
-    self.e42 * f,
+    self.e13 * f,
+    self.e24 * f,
     self.e123 * f,
     self.e234 * f,
     self.e341 * f,
@@ -725,8 +725,8 @@ fn GeometricAlgebra4D::is_bivector_zero(self : GeometricAlgebra4D) -> Bool {
     self.e23 == 0.0 &&
     self.e34 == 0.0 &&
     self.e41 == 0.0 &&
-    self.e31 == 0.0 &&
-    self.e42 == 0.0
+    self.e13 == 0.0 &&
+    self.e24 == 0.0
 }
 
 ///|

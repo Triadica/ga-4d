@@ -29,7 +29,7 @@ test "inverse" {
   assert_eq!(a * a.inverse!(), @lib.GeometricAlgebra4D::unit())
   let b = @lib.GeometricAlgebra4D::make(e1=7, e2=8, e3=9, e4=10)
   assert_eq!(b * b.inverse!(), @lib.GeometricAlgebra4D::unit())
-  let c = @lib.GeometricAlgebra4D::make(e12=1, e23=2, e34=3, e31=4)
+  let c = @lib.GeometricAlgebra4D::make(e12=1, e23=2, e34=3, e13=4)
   assert_eq!(c * c.inverse!(), @lib.GeometricAlgebra4D::unit())
 }
 
