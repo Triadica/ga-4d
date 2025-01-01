@@ -19,13 +19,18 @@ pub(all) struct GeometricAlgebra4D {
   e341 : Double
   e412 : Double
   e1234 : Double
-} derive(Show)
+}
 
 ///|
 pub impl Eq for GeometricAlgebra4D with op_equal(self, other) -> Bool {
   let delta = self - other
   let m2 = delta.magnitude2()
   return m2 < 1.0e-20
+}
+
+///|
+pub impl Show for GeometricAlgebra4D with output(self, logger) -> Unit {
+  logger.write_string(GeometricAlgebra4D::to_string(self))
 }
 
 ///|
@@ -255,19 +260,19 @@ pub fn GeometricAlgebra4D::op_mul(
   let s = self.scalar * other.scalar +
     self.e4 * other.e4 +
     self.e1 * other.e1 +
-    self.e1234 * other.e1234 +
     self.e2 * other.e2 +
     self.e3 * other.e3 -
-    self.e41 * other.e41 -
-    self.e412 * other.e412 -
-    self.e24 * other.e24 -
     self.e12 * other.e12 -
-    self.e123 * other.e123 -
     self.e23 * other.e23 -
-    self.e234 * other.e234 -
     self.e34 * other.e34 -
-    self.e341 * other.e341 -
-    self.e13 * other.e13
+    self.e41 * other.e41 -
+    self.e13 * other.e13 -
+    self.e24 * other.e24 -
+    self.e412 * other.e412 -
+    self.e123 * other.e123 -
+    self.e234 * other.e234 -
+    self.e341 * other.e341 +
+    self.e1234 * other.e1234
   let e1 = self.scalar * other.e1 +
     self.e4 * other.e41 -
     self.e412 * other.e24 -
@@ -539,22 +544,7 @@ pub fn GeometricAlgebra4D::inner_product(
 
 ///|
 pub fn GeometricAlgebra4D::magnitude2(self : GeometricAlgebra4D) -> Double {
-  return self.scalar * self.scalar +
-    self.e1 * self.e1 +
-    self.e2 * self.e2 +
-    self.e3 * self.e3 +
-    self.e4 * self.e4 +
-    self.e12 * self.e12 +
-    self.e23 * self.e23 +
-    self.e34 * self.e34 +
-    self.e41 * self.e41 +
-    self.e13 * self.e13 +
-    self.e24 * self.e24 +
-    self.e123 * self.e123 +
-    self.e234 * self.e234 +
-    self.e341 * self.e341 +
-    self.e412 * self.e412 +
-    self.e1234 * self.e1234
+  return self.self_inner_product().abs()
 }
 
 ///|
@@ -594,16 +584,16 @@ pub fn GeometricAlgebra4D::self_inner_product(
     self.e1 * self.e1 +
     self.e2 * self.e2 +
     self.e3 * self.e3 +
-    self.e4 * self.e4 +
-    self.e12 * self.e12 +
-    self.e23 * self.e23 +
-    self.e34 * self.e34 +
-    self.e41 * self.e41 +
-    self.e13 * self.e13 +
-    self.e24 * self.e24 +
-    self.e123 * self.e123 +
-    self.e234 * self.e234 +
-    self.e341 * self.e341 +
+    self.e4 * self.e4 -
+    self.e12 * self.e12 -
+    self.e23 * self.e23 -
+    self.e34 * self.e34 -
+    self.e41 * self.e41 -
+    self.e13 * self.e13 -
+    self.e24 * self.e24 -
+    self.e123 * self.e123 -
+    self.e234 * self.e234 -
+    self.e341 * self.e341 -
     self.e412 * self.e412 +
     self.e1234 * self.e1234
 }
@@ -771,7 +761,7 @@ pub fn GeometricAlgebra4D::unit() -> GeometricAlgebra4D {
 pub fn GeometricAlgebra4D::inverse(
   self : GeometricAlgebra4D
 ) -> GeometricAlgebra4D!GaErr {
-  let value = self.magnitude2()
+  let value = self.self_inner_product()
   if value == 0 {
     raise GaErr("Cannot invert a zero multivector")
   } else {
