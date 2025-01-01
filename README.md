@@ -1,6 +1,8 @@
 # tiye/ga-4d
 
-Tests scripts for Genetic Algorithm in 4D space.
+Tests scripts for Geometric Algebra in 4D space.
+
+Based on knowledge from https://jacquesheunis.com/post/rotors/ .
 
 ### License
 
